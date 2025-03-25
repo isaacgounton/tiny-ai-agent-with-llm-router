@@ -13,11 +13,13 @@ The script follows this flow:
 
 # Import necessary libraries
 import re
+import os
 import requests
 from typing import List
 from enum import Enum
 from pydantic import BaseModel
 from bs4 import BeautifulSoup
+from dotenv import load_dotenv
 
 # Import SimplerLLM libraries
 from SimplerLLM.language.llm_addons import generate_pydantic_json_model_async
@@ -25,10 +27,8 @@ from SimplerLLM.language.llm_router import LLMRouter
 
 from templates import get_template_choices
 
-
-SEARCH_IO_API_KEY = "XXX" # Replace with your actual API key
-
-
+# Load environment variables
+load_dotenv()
 
 # Define source types
 class SourceType(str, Enum):
@@ -50,7 +50,6 @@ class TweetOutput(BaseModel):
     """
     tweets: List[str]
 
-
 async def get_youtube_transcript(video_id: str) -> str:
     """
     Get the transcript of a YouTube video using searchapi.io.
@@ -64,7 +63,7 @@ async def get_youtube_transcript(video_id: str) -> str:
     # API endpoint and parameters
     api_url = "https://searchapi.io/api/v1/search"
     params = {
-        "api_key": SEARCH_IO_API_KEY,  # Replace with your actual API key
+        "api_key": os.getenv("SEARCH_IO_API_KEY"),
         "engine": "youtube_transcripts",
         "video_id": video_id
     }
@@ -292,4 +291,3 @@ async def main(source_type: SourceType, content: str, llm_profile_path: str, llm
     for i, tweet in enumerate(tweet_output.tweets, 1):
         print(f"\nTweet {i}:")
         print(tweet)
-

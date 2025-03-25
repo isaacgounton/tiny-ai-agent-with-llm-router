@@ -6,25 +6,23 @@ with different source types (YouTube, blog, or text).
 """
 
 import asyncio
+import os
+from dotenv import load_dotenv
 from SimplerLLM.language.llm import LLM, LLMProvider
 from agent_functions import main as generate_tweets_main, SourceType
 
-OPEN_AI_API_KEY = "sk-proj-XXX" # Replace with your actual API key
-
-
-
-
+# Load environment variables
+load_dotenv()
 
 async def run_example():
     """
     Run examples of the Content Tweet Generator with different source types.
     """
-    # Initialize LLM instance
-    # In a real application, you would configure this with your API key and model
+    # Initialize LLM instance with API key from environment variable
     llm_instance = LLM.create(
         provider=LLMProvider.OPENAI,  
         model_name="gpt-4o", 
-        api_key=OPEN_AI_API_KEY  
+        api_key=os.getenv("OPENAI_API_KEY")
     )
     
     # Path to the LLM profile text file
@@ -49,8 +47,6 @@ async def run_example():
     # also raises concerns about privacy, bias, and job displacement.
     # """
     # await generate_tweets_main(SourceType.TEXT, text_content, llm_profile_path, llm_instance)
-
-
 
 if __name__ == "__main__":
     # Run the examples
